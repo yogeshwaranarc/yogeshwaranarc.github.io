@@ -35,7 +35,7 @@ export const PORTS_PER_ROW = 5;
 export const TOOLBOX: readonly (readonly [string, readonly string[]])[] = [
   ['LANGUAGES', ['Go', 'Rust', 'Python', 'SQL', 'TypeScript']],
   ['DATA', ['PostgreSQL', 'Redis', 'NATS', 'MySQL']],
-  ['INFRA', ['Docker', 'AWS', 'gRPC', 'IPFS']],
+  ['INFRA', ['Docker', 'Kubernetes', 'AWS', 'gRPC', 'IPFS']],
   ['CONCEPTS', ['Dist. systems', 'Raft', 'Ledgers', 'Sagas', 'Idempotency']],
 ];
 
