@@ -54,6 +54,9 @@ const fullTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} · ${SITE.r
       .hv-channel{border:1px solid var(--line)}.hv-channel:hover{border-color:var(--dim)}
       /* The toggle names the theme it switches TO. Both labels ship; CSS shows one. */
       :root[data-theme=light] .th-dark,:root:not([data-theme=light]) .th-light{display:none}
+      /* The rack hint names the gesture the device has: hover (mouse) or two taps (touch). */
+      .in-touch{display:none}
+      @media (hover:none){.in-touch{display:inline}.in-mouse{display:none}}
       /* ─────────── keyboard focus ─────────── */
       a:focus-visible,button:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
     </style>

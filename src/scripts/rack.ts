@@ -1,6 +1,12 @@
 // Browser side of the storage-server navigation: boot sequence, hover/focus, eject.
 // All looks come from the pure driveView()/lcdLines() in src/lib/rack.ts; this file
 // only owns the state and writes the result into the elements ServerNav.astro rendered.
+//
+// Touch screens have no hover, so a drive works in two taps there:
+//   first tap   → the drive pulls out and its preview shows (the hover look), no navigation
+//   second tap  → the same drive ejects and the page opens
+//   tap outside → the drive goes back in
+// Mouse and keyboard keep the one-step behaviour: hover/focus previews, click/Enter opens.
 import { DRIVES, BOOT_DONE, BOOT_STEP_MS, EJECT_MS, RESEAT_MS, driveView, lcdLines, type RackState } from '../lib/rack';
 
 const rack = document.querySelector<HTMLElement>('[data-rack]');
@@ -18,6 +24,16 @@ function start(rack: HTMLElement) {
   });
   const lcd1 = q(rack, '[data-lcd1]');
   const lcd2 = q(rack, '[data-lcd2]');
+
+  // The drive a touch user has pulled out with a first tap, waiting for the second tap.
+  let armed: string | null = null;
+  // Fallback for browsers whose click event carries no pointerType: remember the last
+  // pointerdown. Keyboard activation has no pointerdown, so it never counts as touch.
+  let lastDown = { type: '', at: 0 };
+  const isTouch = (e: MouseEvent) => {
+    const type = (e as PointerEvent).pointerType || (performance.now() - lastDown.at < 1000 ? lastDown.type : '');
+    return type === 'touch' || type === 'pen';
+  };
 
   function paint() {
     parts.forEach((p, i) => {
@@ -42,14 +58,25 @@ function start(rack: HTMLElement) {
 
   for (const p of parts) {
     const enter = () => { state.hover = p.d.id; paint(); };
-    const leave = () => { if (state.hover === p.d.id) { state.hover = null; paint(); } };
+    // An armed (tapped) drive keeps its preview until the user taps outside or opens it.
+    const leave = () => { if (state.hover === p.d.id && armed !== p.d.id) { state.hover = null; paint(); } };
     p.face.addEventListener('mouseenter', enter);
     p.face.addEventListener('mouseleave', leave);
     p.face.addEventListener('focus', enter);
     p.face.addEventListener('blur', leave);
+    p.face.addEventListener('pointerdown', (e) => { lastDown = { type: e.pointerType, at: performance.now() }; });
     p.face.addEventListener('click', (e) => {
       // Modified clicks (new tab / new window) keep the browser default: the drive stays seated.
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      if (isTouch(e) && armed !== p.d.id) {
+        // First tap on a touch screen: pull the drive and show its preview, do NOT navigate.
+        e.preventDefault();
+        armed = p.d.id;
+        state.hover = p.d.id;
+        paint();
+        return;
+      }
+      armed = null;
       state.eject = p.d.id;
       paint();
       if (p.d.target) {
@@ -62,10 +89,21 @@ function start(rack: HTMLElement) {
     });
   }
 
+  // A tap anywhere outside the pulled drive puts it back.
+  document.addEventListener('pointerdown', (e) => {
+    if (!armed) return;
+    const inside = parts.find((p) => p.d.id === armed)?.face.contains(e.target as Node);
+    if (inside) return;
+    const was = armed;
+    armed = null;
+    if (state.hover === was) { state.hover = null; paint(); }
+  });
+
   // Back/forward cache restores the page exactly as it was left: with a drive ejected
   // and invisible. Re-seat everything whenever the page is shown again.
   window.addEventListener('pageshow', (e) => {
     if (!e.persisted) return;
+    armed = null;
     state.eject = null;
     state.hover = null;
     paint();

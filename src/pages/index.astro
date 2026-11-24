@@ -30,7 +30,7 @@ const spare = ports - TOOLBOX.reduce((n, [, items]) => n + items.length, 0);
     </div>
 
     <ServerNav />
-    <div style="font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.04em; color:var(--dim)">Pull a drive to open a section.</div>
+    <div style="font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.04em; color:var(--dim)"><span class="in-mouse">Pull a drive to open a section.</span><span class="in-touch">Tap a drive to preview. Tap again to open.</span></div>
 
     <section style="display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:24px 20px; padding:28px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line)">
       {NUMBERS.map(([n, caption]) => (
