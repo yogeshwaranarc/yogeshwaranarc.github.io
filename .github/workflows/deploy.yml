@@ -1,0 +1,58 @@
+# Deploy the portfolio to GitHub Pages.
+#
+# WHAT RUNS: on every push to main (and on manual dispatch) this builds the Astro site
+# with `npm run build` (type-check + static build into dist/) and publishes dist/ through
+# the official Pages actions.
+#
+# WHY IT LIVES HERE: the site is built by Astro, so the repository's files are NOT the
+# site. GitHub's built-in "Deploy from a branch" mode would serve the raw source (and run
+# Jekyll over it). Only a workflow can publish the build output.
+#
+# BOOTSTRAP: one manual step, once. In the repository open Settings → Pages and set
+# "Source" to "GitHub Actions". Until then the deploy job fails with a Pages 404.
+#
+# IMPORTANT: this is a root organization site (yogeshwaranarc.github.io), so the site is
+# served from "/". Do not add a `base` to astro.config.mjs; every absolute link breaks.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Least privilege: read the code, write the Pages deployment, mint the OIDC token Pages verifies.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time. Do NOT cancel a running deploy: a half-published site is worse
+# than a deploy that finishes a minute late.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22 # an LTS line Astro supports; keep it an even (LTS) major
+          cache: npm
+      - run: npm ci # exact versions from package-lock.json, not the newest that match
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
