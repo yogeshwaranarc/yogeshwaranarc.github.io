@@ -1,0 +1,68 @@
+---
+// Page shell: design tokens, the one centred column, header and footer.
+//
+// Styling rule for the whole site: every visual value is an INLINE style copied from
+// the approved design (Portfolio.dc.html). Keep them inline. The global `a:hover` rule
+// below must lose to a link's own colour, and it only loses to an inline style; moving
+// a link colour into a class would make that link change colour on hover.
+// The ONLY classes are the few hover states listed at the end of the stylesheet.
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const { title, description = SITE.description } = Astro.props;
+const fullTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} · ${SITE.role}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <!-- Runs before first paint so a saved light theme never flashes dark. Key: yg-theme. -->
+    <script is:inline>
+      (function () {
+        var t = 'dark';
+        try { t = localStorage.getItem('yg-theme') || 'dark'; } catch (e) {}
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+    <style is:global>
+      /* ─────────── tokens: dark (default) ─────────── */
+      :root{--ac:#D2603A;--act:var(--ac);--bg:#0A0C0B;--fg:#E8EAE8;--mut:#A3A8A5;--dim:#7C817E;--line:#1F2221;--panel:#0E100F;--cell:#232625;
+      --ch:linear-gradient(180deg,#444846,#2e3230 8%,#262928 92%,#191b1a);--drv:linear-gradient(180deg,#535755,#3b3f3d 9%,#313533 88%,#1d201f);--brush:rgba(255,255,255,.03);--chsh:0 34px 60px -24px #000;--chline:#000;--chhi:rgba(255,255,255,.14);--ptxt:#A2A7A4;--lever:linear-gradient(180deg,#7b807d,#474b49 45%,#2a2d2c);--ring:#2a2d2c}
+      /* ─────────── tokens: light ─────────── */
+      :root[data-theme=light]{--act:color-mix(in oklab,var(--ac) 78%,#000);--bg:#F1F2F0;--fg:#141615;--mut:#4F5451;--dim:#6C716E;--line:#D6D8D5;--panel:#F8F9F7;--cell:#DCDEDB;
+      --ch:linear-gradient(180deg,#f6f7f5,#dcdedb 8%,#cfd1ce 92%,#b2b5b1);--drv:linear-gradient(180deg,#f0f1ef,#d5d7d4 9%,#c6c9c5 88%,#a2a5a1);--brush:rgba(0,0,0,.035);--chsh:0 30px 50px -26px rgba(0,0,0,.5);--chline:#8a8d89;--chhi:rgba(255,255,255,.9);--ptxt:#454a47;--lever:linear-gradient(180deg,#fbfcfb,#cdd0cc 45%,#9c9f9b);--ring:#bfc2be}
+      body{margin:0;background:var(--bg);color:var(--fg);font-family:'Geist',system-ui,sans-serif;transition:background .25s,color .25s}
+      a{color:var(--fg)}a:hover{color:var(--act)}
+      /* ─────────── hover states (the design's style-hover attributes) ─────────── */
+      .hv-icon{background:var(--mut)}.hv-icon:hover{background:var(--ac)}
+      .hv-theme{color:var(--mut);border:1px solid var(--line)}.hv-theme:hover{color:var(--fg);border-color:var(--dim)}
+      .hv-mail{border:1px solid var(--line)}.hv-mail:hover{border-color:var(--ac)}
+      .hv-channel{border:1px solid var(--line)}.hv-channel:hover{border-color:var(--dim)}
+      /* The toggle names the theme it switches TO. Both labels ship; CSS shows one. */
+      :root[data-theme=light] .th-dark,:root:not([data-theme=light]) .th-light{display:none}
+      /* ─────────── keyboard focus ─────────── */
+      a:focus-visible,button:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+    </style>
+  </head>
+  <body>
+    <div style="max-width:720px; margin:0 auto; padding:28px 24px 72px; box-sizing:content-box; display:flex; flex-direction:column; gap:56px; min-height:100vh">
+      <Header />
+      <slot />
+      <Footer />
+    </div>
+  </body>
+</html>

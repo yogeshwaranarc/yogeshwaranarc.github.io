@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import KeyValues from '../components/KeyValues.astro';
+import { FACTS, SKILLS } from '../data/content';
+---
+
+<Base title="About" description="Yogeshwaran, a backend software engineer in Coimbatore. Consensus, replication, migrations, access control, money movement.">
+  <main style="display:flex; flex-direction:column; gap:28px">
+    <PageHead current="about" title="About" readout="01 human" />
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr)); gap:24px; align-items:start">
+      <div style="display:flex; flex-direction:column; gap:16px">
+        <p style="margin:0; font-size:19px; line-height:1.5; color:var(--fg); text-wrap:pretty">I'm Yogeshwaran, a backend software engineer in Coimbatore.</p>
+        <p style="margin:0; font-size:16px; line-height:1.65; color:var(--mut); text-wrap:pretty">I like the parts of a system that have to keep working when something else fails: consensus, replication, migrations, access control, money movement.</p>
+        <p style="margin:0; font-size:16px; line-height:1.65; color:var(--mut); text-wrap:pretty">I work at TraineryHCM on a multi-tenant platform. Before that I freelanced for a year and shipped 15+ projects. I am finishing a B.E. in Computer Science Design at Sri Krishna College of Engineering and Technology.</p>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <!-- Known limitation: striped placeholder until a real portrait is supplied. Keep the 4:3 box. -->
+        <div style="aspect-ratio:4/3; border-radius:4px; border:1px solid var(--line); background:repeating-linear-gradient(135deg,var(--panel) 0 10px,var(--cell) 10px 11px); display:grid; place-items:center; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.06em; color:var(--dim)">portrait photo</div>
+        <KeyValues rows={FACTS} />
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:12px">
+      <div style="font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.08em; color:var(--dim)">SKILLS</div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:4px; overflow:hidden">{SKILLS.map(([k, v]) => <div style="display:flex; flex-direction:column; gap:8px; padding:14px; background:var(--panel)"><div style="font-family:'Geist Mono',monospace; font-size:9.5px; letter-spacing:.08em; color:var(--dim)">{k}</div><div style="font-size:15px; line-height:1.55; color:var(--fg)">{v}</div></div>)}</div>
+    </div>
+  </main>
+</Base>

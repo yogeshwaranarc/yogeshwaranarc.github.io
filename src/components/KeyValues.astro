@@ -1,0 +1,9 @@
+---
+// Bordered mono table of label / value rows (Education, the About fact sheet).
+interface Props {
+  rows: readonly (readonly [string, string])[];
+}
+const { rows } = Astro.props;
+---
+
+<div style="display:flex; flex-direction:column; border:1px solid var(--line); border-radius:4px; background:var(--panel); overflow:hidden">{rows.map(([k, v], i) => <div style={`display:flex; justify-content:space-between; gap:16px; padding:11px 14px;${i ? ' border-top:1px solid var(--line);' : ''} font-family:'Geist Mono',monospace; font-size:12px`}><div style="letter-spacing:.06em; color:var(--dim)">{k}</div><div style="text-align:right; color:var(--fg)">{v}</div></div>)}</div>

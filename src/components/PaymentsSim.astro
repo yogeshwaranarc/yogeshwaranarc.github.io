@@ -1,0 +1,46 @@
+---
+// Animated panel for the payments feature: a transfer moving through eight services,
+// the double-entry ledger filling in, and a one-line log. Renders tick 0;
+// src/scripts/sims.ts repaints it every tick. The data-* attributes are its hooks.
+import { payments } from '../lib/sim';
+const v = payments(0);
+// An empty comment splits a text node. The approved design renders this ledger line as
+// four text nodes; one merged node shifts a few glyphs by a fraction of a pixel.
+const cut = '<!---->';
+const pkt = 'width:9px; height:9px; margin:-28px 0 0 -4px; border-radius:50%; background:var(--ac); box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 25%,transparent); transition:left .6s cubic-bezier(.4,0,.2,1), top .6s cubic-bezier(.4,0,.2,1), opacity .3s';
+---
+
+<div data-sim="payments" style="display:flex; flex-direction:column; gap:16px; padding:18px; border:1px solid var(--line); border-radius:4px; background:var(--panel)">
+  <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px 16px">
+    <div style="font-family:'Geist Mono',monospace; font-size:11px; color:var(--mut)">transfer 500.00 · sender → receiver · key 7f3a</div>
+    <div style="font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:.08em; color:var(--dim)">SIMULATION</div>
+  </div>
+  <div style="position:relative; height:156px">
+    <div style="position:absolute; left:12%; width:75%; top:25%; height:1px; background:var(--line)"></div>
+    <div style="position:absolute; left:12%; width:50%; top:75%; height:1px; background:var(--line)"></div>
+    <div style="position:absolute; left:62%; top:25%; height:50%; width:1px; background:var(--line)"></div>
+    <div style="position:absolute; left:87%; top:25%; height:50%; width:1px; background:var(--line)"></div>
+    {v.nodes.map((n) => (
+      <div data-pay-node={n.id} style={`position:absolute; left:${n.x}; top:${n.y}; transform:translate(-50%,-50%); display:flex; align-items:center; gap:clamp(3px,1vw,5px); padding:clamp(4px,1.2vw,6px) clamp(4px,1.5vw,8px); border:1px solid ${n.bd}; border-radius:3px; background:var(--bg); font-family:'Geist Mono',monospace; font-size:clamp(8.5px,2.5vw,10.5px); white-space:nowrap; color:${n.col}; transition:color .3s, border-color .3s`}>
+        <div data-led style={`width:5px; height:5px; flex:none; border-radius:50%; background:${n.led}; box-shadow:${n.glow}; transition:background .3s, box-shadow .3s`}></div>
+        <div data-name>{n.n}</div>
+      </div>
+    ))}
+    <div data-pkt="1" style={`position:absolute; left:${v.pkt.x}; top:${v.pkt.y}; opacity:${v.pkt.op}; ${pkt}`}></div>
+    <div data-pkt="2" style={`position:absolute; left:${v.pkt2.x}; top:${v.pkt2.y}; opacity:${v.pkt2.op}; ${pkt}`}></div>
+  </div>
+  <div style="display:flex; flex-direction:column; gap:8px; padding-top:14px; border-top:1px solid var(--line)">
+    <div style="display:flex; flex-wrap:wrap; justify-content:space-between; gap:4px 16px; font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:.08em; color:var(--dim)">
+      <div>LEDGER · DOUBLE-ENTRY</div>
+      <div data-ledger-check style="color:var(--mut)">{v.ledgerCheck}</div>
+    </div>
+    {v.ledger.map((r) => (
+      <div data-ledger-row style={`display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 12px; font-family:'Geist Mono',monospace; font-size:11.5px; opacity:${r.op}; transition:opacity .4s`}>
+        <div style="width:62px; color:var(--act)">{r.tag}</div>
+        <div style="flex:1; min-width:200px; color:var(--fg)">DR <Fragment set:html={cut} />{r.dr}<Fragment set:html={cut} /> → CR <Fragment set:html={cut} />{r.cr}</div>
+        <div style="color:var(--fg)">500.00</div>
+      </div>
+    ))}
+  </div>
+  <div data-log style="font-family:'Geist Mono',monospace; font-size:12px; line-height:1.5; color:var(--fg); min-height:18px; padding-top:12px; border-top:1px solid var(--line)">{v.log}</div>
+</div>

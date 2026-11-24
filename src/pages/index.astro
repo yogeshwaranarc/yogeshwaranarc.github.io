@@ -1,0 +1,110 @@
+---
+import Base from '../layouts/Base.astro';
+import ServerNav from '../components/ServerNav.astro';
+import PaymentsSim from '../components/PaymentsSim.astro';
+import BunkrSim from '../components/BunkrSim.astro';
+import MoreWork from '../components/MoreWork.astro';
+import Toolbox from '../components/Toolbox.astro';
+import { NUMBERS, TOOLBOX, PORTS_PER_ROW } from '../data/content';
+import { ROLES } from '../data/experience';
+
+const label = "font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.08em; color:var(--dim)";
+const h2 = 'margin:0; font-size:26px; font-weight:600; letter-spacing:-.02em';
+const lead = 'margin:0; font-size:16px; line-height:1.6; color:var(--mut); text-wrap:pretty';
+const more = "font-family:'Geist Mono',monospace; font-size:12px; color:var(--mut); text-decoration:none";
+const repo = 'color:var(--act); text-decoration:none';
+const ports = TOOLBOX.length * PORTS_PER_ROW;
+const spare = ports - TOOLBOX.reduce((n, [, items]) => n + items.length, 0);
+---
+
+<Base>
+  <main style="display:flex; flex-direction:column; gap:40px">
+    <div style="display:flex; flex-direction:column; gap:16px">
+      <div style={label}>BACKEND SOFTWARE ENGINEER · COIMBATORE, IN</div>
+      <h1 style="margin:0; font-size:clamp(34px,6vw,44px); font-weight:600; letter-spacing:-.025em; line-height:1.05">Yogeshwaran</h1>
+      <p style="margin:0; font-size:17px; line-height:1.6; color:var(--mut); text-wrap:pretty">I build backends that stay up: multi-tenant platforms, distributed storage, consensus. At TraineryHCM I work on the customer portal behind 1,000+ production users. On my own time I implemented Raft from scratch in Go for Bunkr, a file system that survives any 2 of 5 node failures.</p>
+      <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 12px; padding-top:4px">
+        <div style="display:flex; align-items:center; gap:7px; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.08em; color:var(--act)"><div style="width:6px; height:6px; border-radius:50%; background:var(--ac)"></div><div>CURRENTLY</div></div>
+        <div style="font-size:15px; line-height:1.5; color:var(--fg)">Building a payments backend: six Go services around a double-entry ledger.</div>
+      </div>
+    </div>
+
+    <ServerNav />
+    <div style="font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.04em; color:var(--dim)">Pull a drive to open a section.</div>
+
+    <section style="display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:24px 20px; padding:28px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line)">
+      {NUMBERS.map(([n, caption]) => (
+        <div style="display:flex; flex-direction:column; gap:6px">
+          <div style="font-size:30px; font-weight:600; letter-spacing:-.02em; line-height:1">{n}</div>
+          <div style="font-size:13px; line-height:1.4; color:var(--mut)">{caption}</div>
+        </div>
+      ))}
+    </section>
+
+    <section style="display:flex; flex-direction:column; gap:18px; padding-top:16px">
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <div style={label}>CURRENTLY BUILDING · GO · FIBER · POSTGRESQL · gRPC · NATS JETSTREAM · REDIS</div>
+        <h2 style={h2}>Payments backend</h2>
+        <p style={lead}>Six microservices around a double-entry ledger where the database itself rejects any transaction that does not balance. Transfers run as sagas, so a service killed mid-transfer resumes on restart and charges the sender exactly once.</p>
+      </div>
+      <PaymentsSim />
+      <div style="display:flex; flex-wrap:wrap; gap:8px 20px; font-family:'Geist Mono',monospace; font-size:12px">
+        <a href="https://github.com/Yogeshwaran-Projects/payment-system" target="_blank" rel="noopener" style={repo}>github.com/Yogeshwaran-Projects/payment-system ↗</a>
+      </div>
+    </section>
+
+    <section style="display:flex; flex-direction:column; gap:18px; padding-top:28px; border-top:1px solid var(--line)">
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <div style={label}>FEATURED · GO · RAFT · gRPC · NEXT.JS</div>
+        <h2 style={h2}>Bunkr, a distributed file system</h2>
+        <p style={lead}>Files are split into 4MB chunks, encrypted with AES-256-GCM before they leave the client, and replicated across a five-node Raft cluster. Any two nodes can fail and nothing is lost.</p>
+      </div>
+      <BunkrSim />
+      <div style="display:flex; flex-wrap:wrap; gap:8px 20px; font-family:'Geist Mono',monospace; font-size:12px">
+        <a href="https://bunkrfile.xyz" target="_blank" rel="noopener" style={repo}>bunkrfile.xyz ↗</a>
+      </div>
+    </section>
+
+    <section style="display:flex; flex-direction:column; gap:22px; padding-top:28px; border-top:1px solid var(--line)">
+      <div style="display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:8px 16px">
+        <h2 style={h2}>More work</h2>
+        <a href="/projects/" style={more}>All projects →</a>
+      </div>
+      <MoreWork />
+    </section>
+
+    <section style="display:flex; flex-direction:column; gap:22px; padding-top:28px; border-top:1px solid var(--line)">
+      <div style="display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:8px 16px">
+        <h2 style={h2}>Experience</h2>
+        <a href="/experience/" style={more}>Full history →</a>
+      </div>
+      <div style="display:flex; flex-direction:column">
+        {ROLES.map((r) => (
+          <div style="display:grid; grid-template-columns:14px minmax(0,1fr); gap:0 16px">
+            <div style="display:flex; flex-direction:column; align-items:center">
+              <div style={`width:9px; height:9px; margin-top:5px; flex:none; border-radius:50%; background:var(--${r.current ? 'ac' : 'cell'}); box-shadow:0 0 0 3px var(--bg), 0 0 0 4px var(--line)`}></div>
+              <div style="flex:1; width:1px; margin-top:6px; background:var(--line)"></div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px; padding-bottom:26px">
+              <div style={`font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.08em; color:var(--${r.current ? 'act' : 'dim'})`}>{r.when}</div>
+              <div style="font-size:18px; font-weight:500">{r.title}<span style="color:var(--mut); font-weight:400"> · {r.org}</span></div>
+              <div style="font-size:15px; line-height:1.55; color:var(--mut); text-wrap:pretty">{r.summary}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section style="display:flex; flex-direction:column; gap:22px; padding-top:28px; border-top:1px solid var(--line)">
+      <div style="display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:8px 16px">
+        <h2 style={h2}>Toolbox</h2>
+        <div style={label}>PATCH PANEL · {ports} PORTS · {spare} SPARE</div>
+      </div>
+      <Toolbox />
+    </section>
+  </main>
+</Base>
+
+<script>
+  import '../scripts/sims';
+</script>

@@ -1,0 +1,29 @@
+---
+// Site footer: identity + email, section links, external links, bottom bar.
+import { SITE, SOCIALS, SECTIONS } from '../data/site';
+const link = 'font-size:14.5px; color:var(--mut); text-decoration:none';
+const label = "font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:.1em; color:var(--dim)";
+---
+
+<footer style="margin-top:auto; display:flex; flex-direction:column; gap:32px; padding-top:36px; border-top:1px solid var(--line)">
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr)); gap:32px 24px">
+    <div style="grid-column:span 2; min-width:0; display:flex; flex-direction:column; gap:14px">
+      <div style="font-size:22px; font-weight:600; letter-spacing:-.02em">{SITE.name}</div>
+      <div style="font-size:15px; line-height:1.55; color:var(--mut); max-width:300px; text-wrap:pretty">{SITE.description}</div>
+      <a class="hv-mail" href={`mailto:${SITE.email}`} style="align-self:flex-start; display:flex; align-items:center; gap:9px; padding:9px 12px; border-radius:3px; font-family:'Geist Mono',monospace; font-size:12px; text-decoration:none; transition:border-color .2s"><div style="width:6px; height:6px; border-radius:50%; background:var(--ac)"></div><div style="overflow-wrap:anywhere">{SITE.email}</div></a>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:10px">
+      <div style={label}>SECTIONS</div>
+      {SECTIONS.map((s) => <a href={s.href} style={link}>{s.name}</a>)}
+    </div>
+    <div style="display:flex; flex-direction:column; gap:10px">
+      <div style={label}>ELSEWHERE</div>
+      {SOCIALS.map((s) => <a href={s.url} target="_blank" rel="noopener" style={link}>{s.label} ↗</a>)}
+      <a href={SITE.resume} target="_blank" rel="noopener" style={link}>Resume (PDF) ↗</a>
+    </div>
+  </div>
+  <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; padding-top:16px; border-top:1px solid var(--line); font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.04em; color:var(--dim)">
+    <div>© 2026 {SITE.name} · {SITE.location}</div>
+    <a href="/" style="color:var(--dim); text-decoration:none">Back to the rack ↑</a>
+  </div>
+</footer>

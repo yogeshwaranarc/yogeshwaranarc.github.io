@@ -1,0 +1,99 @@
+---
+// The home-page navigation, drawn as the front of a rack-mounted storage server.
+// Each section is a hot-swap drive (a real link); the first bays are left open.
+//
+// This file renders the FIRST paint only (boot = 0: LEDs dark, LCD says BOOT).
+// src/scripts/rack.ts then drives hover, eject and the boot sequence through the same
+// pure view function (src/lib/rack.ts). The data-* attributes are that script's hooks:
+// rename one here and the script silently stops painting that part.
+//
+// Bays, label windows, the LCD and ports stay DARK in both themes; only the metal
+// (chassis, drive face, lever) follows the theme tokens.
+import RackEar from './RackEar.astro';
+import { DRIVES, EMPTY_BAYS, driveView, lcdLines, type RackState } from '../lib/rack';
+import { RAIL_STACK } from '../data/content';
+
+const first: RackState = { hover: null, eject: null, boot: 0 };
+const [lcd1, lcd2] = lcdLines(first);
+---
+
+<nav data-rack aria-label="Sections" style="display:flex; border-radius:3px; background:repeating-linear-gradient(90deg,var(--brush) 0 1px,transparent 1px 3px), var(--ch); box-shadow:inset 0 1px 0 var(--chhi), 0 0 0 1px var(--chline), var(--chsh)">
+  <RackEar side="left" holes={3} pad={14} />
+  <div style="flex:1; min-width:0; padding:8px; display:flex; flex-direction:column; gap:8px">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr)); grid-auto-rows:58px; gap:6px; padding:6px; border-radius:2px; background:#0b0d0c; box-shadow:inset 0 2px 6px #000, 0 1px 0 rgba(255,255,255,.12)">
+      {Array.from({ length: EMPTY_BAYS }, () => (
+        <div aria-hidden="true" style="position:relative; overflow:hidden; border-radius:1px; background:linear-gradient(180deg,#000,#040505 50%,#131514); box-shadow:inset 0 12px 14px -4px #000, inset 0 0 0 1px #000">
+          <div style="position:absolute; inset:0 auto 0 0; width:22px; background:linear-gradient(90deg,#191c1b,transparent)"></div>
+          <div style="position:absolute; inset:0 0 0 auto; width:22px; background:linear-gradient(270deg,#191c1b,transparent)"></div>
+          <div style="position:absolute; left:22px; right:22px; top:50%; height:1px; background:#1b1e1d"></div>
+          <div style="position:absolute; inset:13px 34px 9px; background:#080a09; box-shadow:0 0 0 1px #1a1d1c, inset 0 5px 8px #000">
+            <div style="position:absolute; left:8%; bottom:28%; width:26%; height:5px; background:linear-gradient(#353934,#161817)"></div>
+            <div style="position:absolute; left:37%; bottom:28%; width:9%; height:5px; background:linear-gradient(#353934,#161817)"></div>
+            <div style="position:absolute; right:6%; top:20%; width:30%; height:56%; background-image:radial-gradient(circle,#000 1.2px,transparent 1.6px); background-size:6px 6px"></div>
+          </div>
+          <div style="position:absolute; inset:auto 0 0 0; height:9px; background:linear-gradient(0deg,rgba(255,255,255,.07),transparent)"></div>
+        </div>
+      ))}
+      {DRIVES.map((d, i) => {
+        const v = driveView(i, d.id, first);
+        return (
+          <div data-drive={d.id} style={`position:relative; z-index:${v.z}; border-radius:1px; background:linear-gradient(180deg,#000,#050606 60%,#121413); box-shadow:inset 0 12px 14px -4px #000`}>
+            <div style="position:absolute; left:16%; bottom:30%; width:24%; height:5px; background:linear-gradient(#2a2e2c,#131514)"></div>
+            <div data-tip aria-hidden="true" style={`position:absolute; z-index:6; left:0; bottom:calc(100% + 12px); width:min(200px,100%); box-sizing:border-box; display:flex; flex-direction:column; gap:8px; padding:6px 6px 9px; border-radius:4px; background:#121413; box-shadow:0 0 0 1px #2c302e, 0 18px 36px -10px rgba(0,0,0,.8); pointer-events:none; opacity:${v.tipOp}; transform:${v.tipTf}; transition:opacity .2s, transform .25s cubic-bezier(.2,.7,.2,1)`}>
+              {d.preview && (
+                <div style="position:relative; aspect-ratio:16/9; border-radius:2px; overflow:hidden; background:repeating-linear-gradient(135deg,#1a1d1c 0 8px,#151716 8px 16px); border:1px solid #2c302e">
+                  <img src={d.preview} alt="" decoding="async" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top" />
+                </div>
+              )}
+              <div style="display:flex; flex-direction:column; gap:3px; padding:0 4px">
+                <div style="font-size:13px; font-weight:500; color:#E8EAE8">{d.name}</div>
+                <div style="font-family:'Geist Mono',monospace; font-size:10px; line-height:1.4; color:#A3A8A5">{d.prev}</div>
+              </div>
+              <div style="position:absolute; left:22px; bottom:-5px; width:9px; height:9px; background:#121413; box-shadow:1px 1px 0 #2c302e; transform:rotate(45deg)"></div>
+            </div>
+            <a data-face href={d.href} target={d.target} rel={d.target ? 'noopener' : undefined} style={`position:absolute; inset:0; display:flex; align-items:center; gap:8px; padding:0 8px; border-radius:1px; text-decoration:none; color:#E8EAE8; cursor:pointer; background:repeating-linear-gradient(90deg,var(--brush) 0 1px,transparent 1px 3px), var(--drv); box-shadow:${v.sh}; transform:${v.tf}; opacity:${v.op}; transition:transform .28s cubic-bezier(.2,.7,.2,1), box-shadow .28s, opacity .3s`}>
+              <div style="display:flex; flex-direction:column; gap:4px; flex:none">
+                <div data-led1 style={`width:8px;height:3px;border-radius:1px;background:${v.led1};box-shadow:0 0 0 1px #0a0c0b, ${v.glow};transition:background .2s`}></div>
+                <div data-led2 style={`width:8px;height:3px;border-radius:1px;background:${v.led2};box-shadow:0 0 0 1px #0a0c0b;transition:background .2s`}></div>
+              </div>
+              <div style="flex:1; min-width:0; height:68%; display:flex; align-items:center; gap:8px; padding:0 10px; border-radius:2px; background:#0c0e0d; box-shadow:inset 0 2px 4px #000, 0 1px 0 rgba(255,255,255,.2)">
+                <div style="flex:1; font-size:16px; font-weight:500; letter-spacing:-.005em">{d.name}</div>
+                <div style="font-family:'Geist Mono',monospace; font-size:10px; color:#8E9390; white-space:nowrap">{d.read}</div>
+                <div data-arrow style={`font-family:'Geist Mono',monospace; font-size:10px; color:${v.arrow}; transition:color .2s`}>↗</div>
+              </div>
+              <div data-lever style={`width:clamp(48px,12vw,74px); height:16px; flex:none; display:flex; align-items:center; justify-content:space-between; padding:0 4px 0 5px; box-sizing:border-box; border-radius:8px 3px 3px 8px; background:var(--lever); box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 2px 3px rgba(0,0,0,.6), 0 0 0 1px #111; transform-origin:8px 50%; transform:${v.latch}; transition:transform .22s`}>
+                <div style="width:6px;height:6px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#8a8f8c,#1c1f1e 75%);box-shadow:0 0 0 1px #111"></div>
+                <div style="width:12px;height:8px;border-radius:1px;background:linear-gradient(180deg,var(--ac),color-mix(in oklab,var(--ac) 68%,#000));box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 0 1px #111"></div>
+              </div>
+            </a>
+          </div>
+        );
+      })}
+    </div>
+    <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; padding:2px 4px">
+      <div style="width:16px;height:16px;flex:none;border-radius:50%;background:radial-gradient(circle at 50% 30%,#5a5e5c,#1a1c1b);box-shadow:0 0 0 1px #000,0 0 0 3px var(--ring),0 0 0 4px rgba(255,255,255,.12),inset 0 1px 0 rgba(255,255,255,.2);display:grid;place-items:center;margin:4px"><div style="width:3px;height:3px;border-radius:50%;background:var(--ac);box-shadow:0 0 4px var(--ac)"></div></div>
+      <div aria-live="polite" style="flex:1; min-width:170px; height:30px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:center; gap:2px; padding:0 9px; border-radius:2px; background:linear-gradient(180deg,#070908,#0e110f); box-shadow:inset 0 2px 5px #000, inset 0 0 0 1px #000, 0 1px 0 rgba(255,255,255,.16); font-family:'Geist Mono',monospace; overflow:hidden">
+        <div data-lcd1 style="font-size:9px; letter-spacing:.08em; line-height:1.1; color:var(--ac); white-space:nowrap">{lcd1}</div>
+        <div data-lcd2 style="font-size:9.5px; line-height:1.1; color:#C9CEC9; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{lcd2}</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:6px; padding:4px 7px; border-radius:1px; background:linear-gradient(180deg,#1b1d1c,#141615); box-shadow:inset 0 0 0 1px #000, 0 1px 0 rgba(255,255,255,.14)">
+        <div style="width:3px;height:3px;border-radius:50%;background:#555a57"></div>
+        <div style="font-family:'Geist Mono',monospace; font-size:8.5px; letter-spacing:.1em; color:#A2A7A4; white-space:nowrap">YG-8 · HOT-SWAP</div>
+        <div style="width:3px;height:3px;border-radius:50%;background:#555a57"></div>
+      </div>
+      <div style="flex:1 1 100%; padding:0 4px 2px; display:flex; flex-wrap:wrap; justify-content:flex-start; gap:6px 8px">
+        {RAIL_STACK.map((n) => (
+          <div style="display:flex; flex-direction:column; align-items:center; gap:3px">
+            <div style="width:14px;height:9px;border-radius:1px;background:linear-gradient(180deg,#000,#101211);box-shadow:inset 0 2px 2px #000,0 0 0 1px #4a4e4c;display:flex;justify-content:flex-end;align-items:flex-start"><div style="width:2px;height:2px;margin:1px;background:var(--ac)"></div></div>
+            <div style="font-family:'Geist Mono',monospace; font-size:8px; color:var(--ptxt); white-space:nowrap">{n}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+  <RackEar side="right" holes={3} pad={14} />
+</nav>
+
+<script>
+  import '../scripts/rack';
+</script>

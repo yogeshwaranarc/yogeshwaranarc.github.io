@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Bullets from '../components/Bullets.astro';
+import KeyValues from '../components/KeyValues.astro';
+import { ROLES, EDUCATION } from '../data/experience';
+---
+
+<Base title="Experience" description="Software Engineer at TraineryHCM, a year of freelance work, and an internship in computer vision.">
+  <main style="display:flex; flex-direction:column; gap:28px">
+    <PageHead current="experience" title="Experience" readout={`${String(ROLES.length).padStart(2, '0')} roles`} />
+    <div style="display:flex; flex-direction:column">
+      {ROLES.map((r) => (
+        <div style="display:grid; grid-template-columns:14px minmax(0,1fr); gap:0 16px">
+          <div style="display:flex; flex-direction:column; align-items:center">
+            <div style={`width:9px; height:9px; margin-top:20px; flex:none; border-radius:50%; background:var(--${r.current ? 'ac' : 'cell'}); box-shadow:0 0 0 3px var(--bg), 0 0 0 4px var(--line)`}></div>
+            <div style="flex:1; width:1px; margin-top:6px; background:var(--line)"></div>
+          </div>
+          <article style="display:flex; flex-direction:column; gap:14px; padding:16px; margin-bottom:18px; border:1px solid var(--line); border-radius:4px; background:var(--panel)">
+            <div style="display:flex; flex-direction:column; gap:6px">
+              <div style="display:flex; flex-wrap:wrap; justify-content:space-between; gap:4px 16px; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.08em; color:var(--dim)"><div style={`color:var(--${r.current ? 'act' : 'dim'})`}>{r.when}</div><div>{r.where}</div></div>
+              <h2 style="margin:0; font-size:21px; font-weight:600; letter-spacing:-.01em">{r.title}<span style="color:var(--mut); font-weight:400"> · {r.org}</span></h2>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:6px">{r.chips.map((c) => <div style="font-family:'Geist Mono',monospace; font-size:11px; padding:5px 9px; border-radius:2px; background:var(--panel); border:1px solid var(--line); color:var(--fg)">{c}</div>)}</div>
+            <Bullets items={r.bullets} />
+          </article>
+        </div>
+      ))}
+    </div>
+    <div style="display:flex; flex-direction:column; gap:12px">
+      <div style="font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.08em; color:var(--dim)">EDUCATION</div>
+      <KeyValues rows={EDUCATION} />
+    </div>
+  </main>
+</Base>

@@ -1,0 +1,32 @@
+---
+// The toolbox as a patch panel in chassis metal: one lettered row per group, one port
+// per tool. Rows shorter than PORTS_PER_ROW are padded with unlit ports labelled "spare".
+import RackEar from './RackEar.astro';
+import { TOOLBOX, PORTS_PER_ROW } from '../data/content';
+
+const rows = TOOLBOX.map(([title, items], i) => ({
+  title,
+  no: String.fromCharCode(65 + i),
+  ports: Array.from({ length: PORTS_PER_ROW }, (_, k) => (items[k] ? { n: items[k], led: 'var(--ac)', col: '#D5D9D5' } : { n: 'spare', led: '#2e3230', col: '#6F7471' })),
+}));
+---
+
+<div style="display:flex; border-radius:3px; background:repeating-linear-gradient(90deg,var(--brush) 0 1px,transparent 1px 3px), var(--ch); box-shadow:inset 0 1px 0 var(--chhi), 0 0 0 1px var(--chline), var(--chsh)">
+  <RackEar side="left" holes={2} pad={12} />
+  <div style="flex:1; min-width:0; padding:12px 10px; display:flex; flex-direction:column; gap:8px">
+    {rows.map((g) => (
+      <div style="display:flex; flex-wrap:wrap; align-items:stretch; gap:6px 10px">
+        <div style="width:104px; flex:none; display:flex; align-items:center; gap:7px; font-family:'Geist Mono',monospace; font-size:9.5px; letter-spacing:.1em; line-height:1.3; color:var(--ptxt)"><div style="width:14px; flex:none; text-align:right; opacity:.7">{g.no}</div><div>{g.title}</div></div>
+        <div style="flex:1; min-width:min(100%,240px); display:grid; grid-template-columns:repeat(auto-fill,minmax(84px,1fr)); gap:10px 4px; padding:10px 6px 9px; border-radius:2px; background:#0b0d0c; box-shadow:inset 0 2px 6px #000, 0 1px 0 rgba(255,255,255,.12)">
+          {g.ports.map((it) => (
+            <div style="display:flex; flex-direction:column; align-items:center; gap:6px; min-width:0">
+              <div style="width:28px; height:18px; border-radius:2px 2px 1px 1px; background:linear-gradient(180deg,#000,#151716); box-shadow:inset 0 4px 4px #000, 0 0 0 1px #4a4e4c, 0 1px 0 1px rgba(255,255,255,.05); display:flex; justify-content:space-between; align-items:flex-start; padding:2px 3px; box-sizing:border-box"><div style={`width:4px; height:2px; background:${it.led}`}></div><div style="width:4px; height:2px; background:#2e3230"></div></div>
+              <div style={`max-width:100%; font-family:'Geist Mono',monospace; font-size:10px; color:${it.col}; white-space:nowrap; overflow:hidden; text-overflow:ellipsis`}>{it.n}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+  <RackEar side="right" holes={2} pad={12} />
+</div>

@@ -1,0 +1,31 @@
+---
+// Site header: home link, social icons, theme toggle.
+import { SITE, SOCIALS } from '../data/site';
+---
+
+<header style="display:flex; align-items:center; justify-content:space-between; gap:16px">
+  <a href="/" style="font-family:'Geist Mono',monospace; font-size:12px; letter-spacing:.04em; text-decoration:none">{SITE.handle}</a>
+  <div style="display:flex; align-items:center; gap:14px">
+    {SOCIALS.map((s) => (
+      <a class="hv-icon" href={s.url} target="_blank" rel="noopener" aria-label={s.label} title={s.label} style={`display:block; width:16px; height:16px; flex:none; mask:url(/icons/${s.id}.svg) center/contain no-repeat; transition:background .2s`} />
+    ))}
+    <button class="hv-theme" data-theme-toggle aria-label="Toggle light and dark mode" style="display:flex; align-items:center; gap:8px; padding:6px 10px; background:transparent; border-radius:3px; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.06em; cursor:pointer">
+      <div style="width:6px; height:6px; border-radius:50%; background:var(--ac)"></div>
+      <div class="th-dark">LIGHT</div>
+      <div class="th-light">DARK</div>
+    </button>
+  </div>
+</header>
+
+<script>
+  // Flip the theme and remember it. Storage can throw in private windows; the page
+  // still switches for this visit, it only forgets the choice.
+  const root = document.documentElement;
+  document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    root.setAttribute('data-theme', next);
+    try {
+      localStorage.setItem('yg-theme', next);
+    } catch {}
+  });
+</script>

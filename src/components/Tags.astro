@@ -1,0 +1,11 @@
+---
+// Row of small bordered stack tags.
+interface Props {
+  tags: readonly string[];
+  /** Extra inline style for the row (the home cards push it to the bottom). */
+  rowStyle?: string;
+}
+const { tags, rowStyle = '' } = Astro.props;
+---
+
+<div style={`display:flex; flex-wrap:wrap; gap:6px${rowStyle ? '; ' + rowStyle : ''}`}>{tags.map((t) => <div style="font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:.04em; padding:3px 7px; border:1px solid var(--line); border-radius:2px; color:var(--mut)">{t}</div>)}</div>

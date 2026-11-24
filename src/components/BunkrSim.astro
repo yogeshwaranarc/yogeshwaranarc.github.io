@@ -1,0 +1,33 @@
+---
+// Animated panel for the Bunkr feature: a file split into chunks, encrypted, replicated
+// to five Raft nodes, then a leader failure and an election. Renders tick 0;
+// src/scripts/sims.ts repaints it every tick. The data-* attributes are its hooks.
+import { bunkr } from '../lib/sim';
+const v = bunkr(0);
+---
+
+<div data-sim="bunkr" style="display:flex; flex-direction:column; gap:16px; padding:18px; border:1px solid var(--line); border-radius:4px; background:var(--panel)">
+  <div style="display:flex; align-items:center; justify-content:space-between; gap:16px">
+    <div style="font-family:'Geist Mono',monospace; font-size:11px; color:var(--mut)">report.pdf · 16 MB · client side</div>
+    <div style="font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:.08em; color:var(--dim)">SIMULATION</div>
+  </div>
+  <div data-chunks style={`display:flex; gap:${v.chunkGap}; height:22px; transition:gap .5s cubic-bezier(.2,.7,.2,1)`}>
+    {v.chunks.map((c) => <div data-chunk style={`flex:1; display:grid; place-items:center; border-radius:2px; background:${c.bg}; font-family:'Geist Mono',monospace; font-size:9.5px; color:${c.col}; transition:background .5s, color .5s`}>{c.label}</div>)}
+  </div>
+  <div style="display:flex; justify-content:center"><div style="width:1px; height:14px; background:var(--line)"></div></div>
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(88px,1fr)); gap:8px">
+    {v.nodes.map((n) => (
+      <div data-node style={`display:flex; flex-direction:column; gap:8px; padding:10px; border:1px solid ${n.bd}; border-radius:3px; background:var(--bg); opacity:${n.op}; transition:opacity .4s, border-color .4s`}>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:5px; font-family:'Geist Mono',monospace; font-size:10px; color:var(--mut)">
+          <div style="display:flex; align-items:center; gap:5px"><div data-led style={`width:5px; height:5px; flex:none; border-radius:50%; background:${n.led}; transition:background .3s`}></div><div>{n.name}</div></div>
+          <div data-term style="color:var(--dim)">{n.term}</div>
+        </div>
+        <div data-role style={`font-family:'Geist Mono',monospace; font-size:9.5px; letter-spacing:.08em; color:${n.roleCol}; transition:color .3s`}>{n.role}</div>
+        <div style="display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:3px">
+          {n.cells.map((bg) => <div data-cell style={`height:10px; border-radius:1px; background:${bg}; transition:background .4s`}></div>)}
+        </div>
+      </div>
+    ))}
+  </div>
+  <div data-log style="font-family:'Geist Mono',monospace; font-size:12px; line-height:1.5; color:var(--fg); min-height:18px; padding-top:12px; border-top:1px solid var(--line)">{v.log}</div>
+</div>

@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { POSTS } from '../data/content';
+---
+
+<Base title="Blog" description="Engineering notes on Raft, zero-downtime migrations and on-chain state machines. Drafts in the queue.">
+  <main style="display:flex; flex-direction:column; gap:28px">
+    <PageHead current="blog" title="Blog" readout={`${String(POSTS.length).padStart(2, '0')} drafts`}>
+      <p style="margin:0; font-size:16px; line-height:1.6; color:var(--mut); text-wrap:pretty">Nothing published yet. These are placeholder titles for the first three posts in the queue.</p>
+    </PageHead>
+    <div style="display:flex; flex-direction:column; gap:10px">
+      {POSTS.map((p, i) => (
+        <div style="display:grid; grid-template-columns:auto minmax(0,1fr); gap:0 16px; padding:18px 16px; border:1px solid var(--line); border-radius:4px; background:var(--panel)">
+          <div style="font-family:'Geist Mono',monospace; font-size:22px; font-weight:500; line-height:1.1; color:var(--dim)">{String(i + 1).padStart(2, '0')}</div>
+          <div style="display:flex; flex-direction:column; gap:10px">
+            <div style="font-size:19px; font-weight:500; line-height:1.3; text-wrap:balance">{p.title}</div>
+            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; font-family:'Geist Mono',monospace; font-size:10.5px; letter-spacing:.06em; color:var(--dim)">
+              <div style="display:flex; align-items:center; gap:6px; padding:3px 7px; border:1px solid var(--line); border-radius:2px"><div style="width:5px; height:5px; border-radius:50%; background:var(--cell)"></div><div>DRAFT</div></div>
+              <div>{p.source}</div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </main>
+</Base>

@@ -1,0 +1,9 @@
+---
+// Bullet list with a 5px accent square as the marker.
+interface Props {
+  items: readonly string[];
+}
+const { items } = Astro.props;
+---
+
+<div style="display:flex; flex-direction:column; gap:9px">{items.map((b) => <div style="display:flex; gap:11px; font-size:15px; line-height:1.55; color:var(--mut)"><div style="width:5px; height:5px; flex:none; margin-top:9px; background:var(--ac)"></div><div style="text-wrap:pretty">{b}</div></div>)}</div>

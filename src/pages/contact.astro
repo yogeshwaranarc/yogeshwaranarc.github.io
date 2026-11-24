@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { SITE, SOCIALS } from '../data/site';
+---
+
+<Base title="Contact" description="Email is fastest. Also on GitHub, LinkedIn and X.">
+  <main style="display:flex; flex-direction:column; gap:28px">
+    <PageHead current="contact" title="Contact" readout={`${String(SOCIALS.length).padStart(2, '0')} channels`} />
+    <a href={`mailto:${SITE.email}`} style="display:flex; flex-direction:column; gap:10px; padding:24px 18px; border:1px solid var(--line); border-radius:4px; background:var(--panel); text-decoration:none">
+      <div style="display:flex; align-items:center; gap:7px; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.08em; color:var(--act)"><div style="width:6px; height:6px; border-radius:50%; background:var(--ac)"></div><div>EMAIL · FASTEST</div></div>
+      <div style="font-size:clamp(20px,5vw,30px); font-weight:600; letter-spacing:-.02em; color:var(--fg); overflow-wrap:anywhere">{SITE.email}</div>
+    </a>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr)); gap:10px">
+      {SOCIALS.map((s) => (
+        <a class="hv-channel" href={s.url} target="_blank" rel="noopener" style="display:flex; align-items:center; gap:14px; padding:16px; border-radius:4px; background:var(--panel); text-decoration:none; transition:border-color .2s">
+          <div style={`width:20px; height:20px; flex:none; background:var(--fg); mask:url(/icons/${s.id}.svg) center/contain no-repeat`}></div>
+          <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:3px">
+            <div style="font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:.08em; color:var(--dim)">{s.label.toUpperCase()}</div>
+            <div style="font-size:15px; color:var(--fg); overflow:hidden; text-overflow:ellipsis; white-space:nowrap">{s.handle}</div>
+          </div>
+          <div style="font-family:'Geist Mono',monospace; font-size:13px; color:var(--act)">↗</div>
+        </a>
+      ))}
+    </div>
+  </main>
+</Base>

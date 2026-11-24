@@ -1,0 +1,38 @@
+---
+// Head of every inner page: "← RACK" back link, section nav, and the title sled
+// (a drive face with LED bars, a dark label window holding the <h1>, and a lever).
+// The default slot is the optional intro line under the sled.
+import { SECTIONS, type SectionId } from '../data/site';
+
+interface Props {
+  current: SectionId;
+  title: string;
+  /** Mono readout at the right of the label window, e.g. "04 builds". */
+  readout: string;
+}
+const { current, title, readout } = Astro.props;
+---
+
+<div style="display:flex; flex-direction:column; gap:18px">
+  <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.06em">
+    <a href="/" style="color:var(--dim); text-decoration:none">← RACK</a>
+    <div style="display:flex; flex-wrap:wrap; gap:4px 14px">
+      {SECTIONS.map((s) => <a href={s.href} aria-current={s.id === current ? 'page' : undefined} style={`color:var(--${s.id === current ? 'act' : 'dim'}); text-decoration:none`}>{s.name.toUpperCase()}</a>)}
+    </div>
+  </div>
+  <div style="display:flex; align-items:center; gap:12px; padding:0 12px; height:76px; border-radius:2px; background:repeating-linear-gradient(90deg,var(--brush) 0 1px,transparent 1px 3px), var(--drv); box-shadow:inset 0 1px 0 var(--chhi), inset 0 -1px 0 rgba(0,0,0,.4), 0 0 0 1px var(--chline), 0 22px 34px -22px rgba(0,0,0,.8)">
+    <div style="display:flex; flex-direction:column; gap:5px; flex:none">
+      <div style="width:10px; height:4px; border-radius:1px; background:var(--ac); box-shadow:0 0 0 1px #0a0c0b, 0 0 5px color-mix(in srgb,var(--ac) 60%,transparent)"></div>
+      <div style="width:10px; height:4px; border-radius:1px; background:#1b1e1d; box-shadow:0 0 0 1px #0a0c0b"></div>
+    </div>
+    <div style="flex:1; min-width:0; height:52px; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:0 14px; border-radius:2px; background:#0c0e0d; box-shadow:inset 0 2px 5px #000, 0 1px 0 rgba(255,255,255,.2)">
+      <h1 style="margin:0; font-size:clamp(22px,5vw,28px); font-weight:600; letter-spacing:-.02em; color:#E8EAE8">{title}</h1>
+      <div style="font-family:'Geist Mono',monospace; font-size:11px; color:#8E9390; white-space:nowrap">{readout}</div>
+    </div>
+    <div style="width:clamp(44px,13vw,96px); height:20px; flex:none; display:flex; align-items:center; justify-content:space-between; padding:0 5px 0 6px; box-sizing:border-box; border-radius:10px 3px 3px 10px; background:var(--lever); box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 2px 3px rgba(0,0,0,.6), 0 0 0 1px #111">
+      <div style="width:8px; height:8px; border-radius:50%; background:radial-gradient(circle at 35% 30%,#8a8f8c,#1c1f1e 75%); box-shadow:0 0 0 1px #111"></div>
+      <div style="width:14px; height:10px; border-radius:1px; background:linear-gradient(180deg,var(--ac),color-mix(in oklab,var(--ac) 68%,#000)); box-shadow:inset 0 1px 0 rgba(255,255,255,.4), 0 0 0 1px #111"></div>
+    </div>
+  </div>
+  <slot />
+</div>

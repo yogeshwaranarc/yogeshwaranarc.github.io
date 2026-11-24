@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { PROJECTS } from '../data/projects';
+---
+
+<Base title="Projects" description="Four builds: a payments backend, a distributed file system, an escrow on Solana and a course marketplace.">
+  <main style="display:flex; flex-direction:column; gap:28px">
+    <PageHead current="projects" title="Projects" readout={`${String(PROJECTS.length).padStart(2, '0')} builds`}>
+      <p style="margin:0; font-size:16px; line-height:1.6; color:var(--mut); text-wrap:pretty">Four builds, newest first. Each one is something I designed, wrote and ran myself.</p>
+    </PageHead>
+    {PROJECTS.map((p, i) => <ProjectCard project={p} no={i + 1} />)}
+  </main>
+</Base>
