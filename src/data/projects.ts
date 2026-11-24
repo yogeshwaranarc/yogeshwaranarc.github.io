@@ -37,8 +37,9 @@ export const PROJECTS: readonly Project[] = [
       'Cross-service transfers are sagas (hold, capture, release). A service killed mid-transfer resumes on restart and charges the sender exactly once.',
       'Transactional outbox and NATS JetStream: no event lost when the broker is down, duplicates dropped, failures replayed from a dead-letter queue.',
       'mTLS between services, least-privilege database roles, an append-only audit log, signed webhooks and risk checks with manual review.',
+      'Deployed on Kubernetes with Helm; rolling updates under load with 0 failed requests.',
     ],
-    tags: ['Go', 'Fiber', 'PostgreSQL', 'gRPC', 'NATS JetStream', 'Redis', 'Docker'],
+    tags: ['Go', 'Fiber', 'PostgreSQL', 'gRPC', 'NATS JetStream', 'Redis', 'Docker', 'Kubernetes'],
     links: [{ label: 'GitHub ↗', url: 'https://github.com/Yogeshwaran-Projects/payment-system' }],
   },
   {
